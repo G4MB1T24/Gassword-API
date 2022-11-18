@@ -3,6 +3,8 @@ const router = express.Router();
 const Users = require("../models/Users");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
+const getAuth = require("../middleware/getAuth")
+const TokenGen = require("../helpers/TokenGen")
 
 router.post(
   "/createuser",
@@ -34,6 +36,7 @@ router.post(
 
       res.json({
         User: User,
+        token:TokenGen(User._id)
       });
     } catch (error) {
       res.send("error");
@@ -67,14 +70,23 @@ router.post(
           .status(400)
           .json({ error: "Login with correct Credentials " });
       }
-      console.log(passwordCompare);
 
-      res.json(user);
+      res.json({user:user , token:TokenGen(user._id)});
     } catch (error) {
       console.log(error.message);
       return res.status(500).json({ Error: "server error" });
     }
   }
 );
+router.post("/getuser", getAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await Users.findById(userId).select("-password");
+    res.send(user);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 module.exports = router;
