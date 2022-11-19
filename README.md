@@ -29,9 +29,9 @@ To run this project, you will need to add the following environment variables to
 
 `ENC_SECRET_KEY`  ````To encrypt and decrypt your password````
 
-`JWT_SEC` // ````To get jwtToken````
+`JWT_SEC`  ````To get jwtToken````
 
-`MONGO_URI` // ````Your local or cloud mongoDb database connection string````
+`MONGO_URI`  ````Your local or cloud mongoDb database connection string````
 
 
 ## Tech Stack
