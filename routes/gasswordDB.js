@@ -14,12 +14,10 @@ router.get(
   getAuth,
   async (req, res) => {
     try {
+      if (!req.body.mpin) return res.send("Mpin Required").status(404);
       const user = await Users.findOne({ user: req.user.id });
-      // console.log(user)
-      
-      const mpincompare = await bcrypt.compare(req.body.mpin, user.mpin)
-      if (!mpincompare)
-        return res.status(404).send("Incorect Mpin");
+      const mpincompare = await bcrypt.compare(req.body.mpin, user.mpin);
+      if (!mpincompare) return res.status(404).send("Incorect Mpin");
       const gass = await Gassword.find({ user: req.user.id });
       res.json(gass);
     } catch (error) {
@@ -58,8 +56,11 @@ router.post(
 );
 router.delete("/delete/:id", getAuth, async (req, res) => {
   try {
+    if (!req.body.mpin) return res.send("Mpin Required").status(404);
+    const user = await Users.findOne({ user: req.user.id });
     if (!req.params.id) return res.send("Please input userid");
-
+    const mpincompare = await bcrypt.compare(req.body.mpin, user.mpin);
+    if (!mpincompare) return res.status(404).send("Incorect Mpin");
     const gass = await Gassword.findByIdAndDelete(req.params.id);
     if (!gass) return res.send("Post not found");
     res.send("Deleted!");
