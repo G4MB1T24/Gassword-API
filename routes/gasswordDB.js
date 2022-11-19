@@ -3,7 +3,6 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const getAuth = require("../middleware/getAuth");
 const Gassword = require("../models/Gassword");
-const CryptoJS = require("crypto-js");
 const Users = require("../models/Users");
 const bcrypt = require("bcrypt");
 const encrypt = require("../helpers/Encryptor");
