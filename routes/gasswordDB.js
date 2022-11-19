@@ -4,16 +4,29 @@ const { body, validationResult } = require("express-validator");
 const getAuth = require("../middleware/getAuth");
 const Gassword = require("../models/Gassword");
 const CryptoJS = require("crypto-js");
+const Users = require("../models/Users");
+
 const SECRET_KEY = process.env.ENC_SECRET_KEY;
 require("dotenv").config();
-router.get("/getgass", getAuth, async (req, res) => {
-  try {
-    const gass = await Gassword.find({ user: req.user.id });
-    res.json(gass );
-  } catch (error) {
-    res.send("Error boop");
+router.get(
+  "/getgass",
+
+  getAuth,
+  async (req, res) => {
+    try {
+      const user = await Users.findOne({ user: req.user.id });
+      // console.log(user)
+      if (!req.body.mpin) return res.status(404).send("MPIN required");
+
+      if (req.body.mpin != user.mpin)
+        return res.status(404).send("Incorect Mpin");
+      const gass = await Gassword.find({ user: req.user.id });
+      res.json(gass);
+    } catch (error) {
+      res.send("Error boop");
+    }
   }
-});
+);
 router.post(
   "/creategass",
   [
@@ -45,13 +58,11 @@ router.post(
 );
 router.delete("/delete/:id", getAuth, async (req, res) => {
   try {
-    if (!req.params.id) return res.send("Please input userid")
+    if (!req.params.id) return res.send("Please input userid");
 
-    const gass = await Gassword.findByIdAndDelete(req.params.id)
-    if (!gass) return res.send("Post not found")
-    res.send("Deleted!")
-  } catch (error) {
-    
-  }
-})
+    const gass = await Gassword.findByIdAndDelete(req.params.id);
+    if (!gass) return res.send("Post not found");
+    res.send("Deleted!");
+  } catch (error) {}
+});
 module.exports = router;

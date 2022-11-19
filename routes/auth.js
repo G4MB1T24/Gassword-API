@@ -10,11 +10,12 @@ router.post(
   "/createuser",
   [
     body("email").isEmail().withMessage("Email Required"),
+    body("mpin").isLength({min: 4, max: 4}).withMessage("Mpin is required"),
     body("password")
-      .isLength({ min: 5 })
-      .withMessage("Min 5 characters Required"),
+    .isLength({ min: 5 }) 
+    .withMessage("Min 5 characters Required"),
   ],
-    async (req, res) => {
+  async (req, res) => {
       
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -32,6 +33,7 @@ router.post(
       const User = await Users.create({
         email: req.body.email,
         password: securePass,
+        mpin : req.body.mpin
       });
 
       res.json({
@@ -49,21 +51,25 @@ router.post(
   [
     body("email", "not an email").isEmail(),
     body("password").exists().withMessage("Min 5 characters Required"),
+    body("mpin").isLength({min: 4, max: 4}).withMessage("Mpin is required"),
+
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password } = req.body;
+    const { email, password , mpin } = req.body;
     try {
       let user = await Users.findOne({ email });
       // console.log(user)
       if (!user) {
         return res
-          .status(400)
-          .json({ error: "Login with correct Credentials " });
+        .status(400)
+        .json({ error: "Login with correct Credentials " });
       }
+      
+      if (mpin != user.mpin) return res.send("Incorrect MPIN")
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
         return res

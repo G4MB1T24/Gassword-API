@@ -14,6 +14,10 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  mpin: {
+    type: Number,
+    require : true
+  }
   
 });
 const Users = mongoose.model("Users", UserSchema);
