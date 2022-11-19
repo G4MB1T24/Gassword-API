@@ -17,7 +17,7 @@ app.use(express.json());
 connectToMongo();
 
 app.get("/", async (req, res) => {
-  res.send("Hello");
+  res.send("Gassword up and running!");
 });
 
 app.use("/auth/api", ipfilter(ips, { mode: "allow" }), Auth);
