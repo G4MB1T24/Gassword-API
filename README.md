@@ -11,7 +11,7 @@ git clone https://github.com/G4MB1T24/Gassword-API.git
 
 ```
 ```bash
-  cd /your-folder/
+  cd /your-folder/Gassword-API
   npx nodemon server/core.js
 ```
     
