@@ -88,7 +88,7 @@ router.post(
 router.post("/getuser", getAuth, async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await Users.findById(userId).select("-password" , "-mpin");
+    const user = await Users.findById(userId).select("-password", "-mpin");
     res.send(user);
   } catch (error) {
     console.error(error.message);

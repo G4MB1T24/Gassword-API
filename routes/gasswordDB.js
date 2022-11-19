@@ -6,7 +6,7 @@ const Gassword = require("../models/Gassword");
 const CryptoJS = require("crypto-js");
 const Users = require("../models/Users");
 const bcrypt = require("bcrypt");
-const encrypt = require("../helpers/Encryptor")
+const encrypt = require("../helpers/Encryptor");
 require("dotenv").config();
 router.get(
   "/getgass",
@@ -43,7 +43,7 @@ router.post(
     try {
       const gass = await Gassword.create({
         title: title,
-        password: encrypt(password) ,
+        password: encrypt(password),
         user: req.user.id,
       });
 
