@@ -15,7 +15,7 @@ const UserSchema = new Schema({
     default: Date.now,
   },
   mpin: {
-    type: Number,
+    type: String,
     require : true
   }
   

@@ -5,7 +5,7 @@ const getAuth = require("../middleware/getAuth");
 const Gassword = require("../models/Gassword");
 const CryptoJS = require("crypto-js");
 const Users = require("../models/Users");
-
+const bcrypt = require("bcrypt");
 const SECRET_KEY = process.env.ENC_SECRET_KEY;
 require("dotenv").config();
 router.get(
@@ -16,9 +16,9 @@ router.get(
     try {
       const user = await Users.findOne({ user: req.user.id });
       // console.log(user)
-      if (!req.body.mpin) return res.status(404).send("MPIN required");
-
-      if (req.body.mpin != user.mpin)
+      
+      const mpincompare = await bcrypt.compare(req.body.mpin, user.mpin)
+      if (!mpincompare)
         return res.status(404).send("Incorect Mpin");
       const gass = await Gassword.find({ user: req.user.id });
       res.json(gass);
