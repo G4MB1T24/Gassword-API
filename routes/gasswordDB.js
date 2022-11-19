@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcrypt");
+
 const getAuth = require("../middleware/getAuth");
 const Gassword = require("../models/Gassword");
 const Users = require("../models/Users");
-const bcrypt = require("bcrypt");
 const encrypt = require("../helpers/Encryptor");
+
 require("dotenv").config();
+
 router.get(
   "/getgass",
 
@@ -24,6 +27,7 @@ router.get(
     }
   }
 );
+
 router.post(
   "/creategass",
   [
@@ -52,16 +56,22 @@ router.post(
     }
   }
 );
+
 router.delete("/delete/:id", getAuth, async (req, res) => {
   try {
     if (!req.body.mpin) return res.send("Mpin Required").status(404);
     const user = await Users.findOne({ user: req.user.id });
+
     if (!req.params.id) return res.send("Please input userid");
     const mpincompare = await bcrypt.compare(req.body.mpin, user.mpin);
+    
     if (!mpincompare) return res.status(404).send("Incorect Mpin");
     const gass = await Gassword.findByIdAndDelete(req.params.id);
+    
     if (!gass) return res.send("Post not found");
     res.send("Deleted!");
-  } catch (error) {}
+  } catch (error) {
+    res.send("404")
+  }
 });
 module.exports = router;

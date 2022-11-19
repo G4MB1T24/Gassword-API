@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const Users = require("../models/Users");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
+
+const Users = require("../models/Users");
 const getAuth = require("../middleware/getAuth");
 const TokenGen = require("../helpers/TokenGen");
 
@@ -47,7 +48,7 @@ router.post(
     }
   }
 );
-// Login
+
 router.post(
   "/login",
   [
@@ -85,14 +86,18 @@ router.post(
     }
   }
 );
+
 router.post("/getuser", getAuth, async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await Users.findById(userId).select("-password", "-mpin");
+    
     res.send(user);
   } catch (error) {
+    
     console.error(error.message);
     res.status(500).send("Internal Server Error");
+  
   }
 });
 
