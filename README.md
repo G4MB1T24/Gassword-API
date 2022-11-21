@@ -1,8 +1,7 @@
 
 # Password Vault
+
 ## Currently this project is hosted locally 
-
-
 
 ## Installation
 
@@ -21,13 +20,12 @@ git clone https://github.com/G4MB1T24/Gassword-API.git
 - 2 . Y'our passwords are encrypted with the help of [Cryptojs](https://www.npmjs.com/package/crypto-js)
 - 3 . Has MPIN for added Security
 - 4 . Run on your local machine or Your Web server or in my **free** hosted server
-- 5 . (I wouldn't recommend the fourth point)
-
+- 5 . Zero knowledge encryption, passwords are encrypted via user given key which is not stored in the server(unhashed) 
+- 6 . (hashed key is stored but in no way i can decrypt it)
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
 
-`ENC_SECRET_KEY`  ````To encrypt and decrypt your password````
 
 `JWT_SEC`  ````To get jwtToken````
 
@@ -40,5 +38,8 @@ To run this project, you will need to add the following environment variables to
 
 **Server:** Node, Express , Cryptojs
 
+## Encryption is explained below 
+#### i added it just for fun >_<
+<img src="https://i.imgur.com/6VBRnsW.jpg"> </img>
 
-## Have to add few more things before i start to code it's frontend
+

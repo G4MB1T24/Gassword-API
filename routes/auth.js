@@ -12,6 +12,7 @@ router.post(
   [
     body("email").isEmail().withMessage("Email Required"),
     body("mpin").isLength({ min: 4, max: 4 }).withMessage("Mpin is required"),
+    body("enc_key").isLength({ min: 4 }).withMessage("Secret is required"),
     body("password")
       .isLength({ min: 5 })
       .withMessage("Min 5 characters Required"),
@@ -21,7 +22,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password, mpin } = req.body;
+    const { email, password, mpin , enc_key} = req.body;
     try {
       let useremail = await Users.findOne({ email: req.body.email });
       if (useremail) {
@@ -32,11 +33,12 @@ router.post(
       const salt = await bcrypt.genSaltSync(10);
       const securePass = await bcrypt.hash(password, salt);
       const secureMpin = await bcrypt.hash(mpin, salt);
-
+      const secureenc_key = await bcrypt.hash(enc_key , salt)
       const User = await Users.create({
         email: email,
         password: securePass,
         mpin: secureMpin,
+        enc_key : secureenc_key
       });
 
       res.json({
@@ -44,7 +46,8 @@ router.post(
         token: TokenGen(User._id),
       });
     } catch (error) {
-      res.json({ e: error.message });
+      res.send("Some Error has occured make sure to input right info").status(404)
+      
     }
   }
 );
@@ -82,7 +85,8 @@ router.post(
       res.json({ user: user, token: TokenGen(user._id) });
     } catch (error) {
       console.log(error.message);
-      return res.status(500).json({ Error: "server error" });
+      res.send("Some Error has occured make sure to input right info").status(404)
+      
     }
   }
 );
@@ -90,7 +94,7 @@ router.post(
 router.post("/getuser", getAuth, async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await Users.findById(userId).select("-password", "-mpin");
+    const user = await Users.findById(userId).select("-password", "-mpin" , "enc_key");
     
     res.send(user);
   } catch (error) {

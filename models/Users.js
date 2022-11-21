@@ -18,6 +18,10 @@ const UserSchema = new Schema({
     type: String,
     require: true,
   },
+  enc_key: {
+    type: String,
+    require : true,
+  }
 });
 const Users = mongoose.model("Users", UserSchema);
 module.exports = Users;

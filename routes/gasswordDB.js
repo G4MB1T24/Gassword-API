@@ -23,7 +23,7 @@ router.get(
       const gass = await Gassword.find({ user: req.user.id });
       res.json(gass);
     } catch (error) {
-      res.send("Error boop");
+      res.send("Some Error has occured make sure to input right credentials. if you forgot your enc_key there is no way to recover it.").status(404)
     }
   }
 );
@@ -32,6 +32,7 @@ router.post(
   "/creategass",
   [
     body("title").isLength({ min: 3 }).withMessage("title Required"),
+    body("enc_key").isLength({ min: 4 }).withMessage("Secret is required"),
     body("password")
       .isLength({ min: 5 })
       .withMessage("Min 5 characters Required"),
@@ -42,17 +43,22 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { title, password } = req.body;
+    const { title, password , enc_key } = req.body;
     try {
+      const user = await Users.findOne({ user: req.user.id });
+      const processedKey = await bcrypt.compare(enc_key, user.enc_key)
+      if (!processedKey) return res.status(404).send("Incorect Encryption Key!");
+      
       const gass = await Gassword.create({
         title: title,
-        password: encrypt(password),
+        password: encrypt(password ,enc_key),
         user: req.user.id,
       });
 
       res.send(gass);
     } catch (error) {
-      res.json({ error: error.message });
+      res.send("Some Error has occured make sure to input right credentials. if you forgot your enc_key there is no way to recover it.").status(404)
+  
     }
   }
 );
@@ -71,7 +77,8 @@ router.delete("/delete/:id", getAuth, async (req, res) => {
     if (!gass) return res.send("Post not found");
     res.send("Deleted!");
   } catch (error) {
-    res.send("404")
+    res.send("Some Error has occured make sure to input right credentials. if you forgot your enc_key there is no way to recover it.").status(404)
+
   }
 });
 module.exports = router;
