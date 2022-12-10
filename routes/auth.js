@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const Users = require("../models/Users");
 const getAuth = require("../middleware/getAuth");
 const TokenGen = require("../helpers/TokenGen");
+let success = false
 
 router.post(
   "/createuser",
@@ -40,9 +41,9 @@ router.post(
         mpin: secureMpin,
         enc_key : secureenc_key
       });
-
+      success = true
       res.json({
-        User: User,
+        success,
         token: TokenGen(User._id),
       });
     } catch (error) {
@@ -56,8 +57,9 @@ router.post(
   "/login",
   [
     body("email", "not an email").isEmail(),
-    body("password").exists().withMessage("Min 5 characters Required"),
+    body("password").isLength({min: 5}).exists().withMessage("Min 5 characters Required"),
     body("mpin").isLength({ min: 4, max: 4 }).withMessage("Mpin is required"),
+
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -71,18 +73,20 @@ router.post(
       if (!user) {
         return res
           .status(400)
-          .json({ error: "Login with correct Credentials " });
+          .json({ success , error: "Login with correct Credentials " });
       }
       const mpincompare = await bcrypt.compare(mpin, user.mpin);
       if (!mpincompare) return res.status(404).send("Incorrect Mpin");
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
+        success = false
         return res
+          
           .status(400)
-          .json({ error: "Login with correct Credentials " });
+          .json({success, error: "Login with correct Credentials " });
       }
-
-      res.json({ user: user, token: TokenGen(user._id) });
+      success = true
+      res.json({ success , token: TokenGen(user._id) });
     } catch (error) {
       console.log(error.message);
       res.send("Some Error has occured make sure to input right info").status(404)

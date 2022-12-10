@@ -10,7 +10,7 @@ const encrypt = require("../helpers/Encryptor");
 
 require("dotenv").config();
 
-router.get(
+router.post(
   "/getgass",
 
   getAuth,
@@ -32,6 +32,7 @@ router.post(
   "/creategass",
   [
     body("title").isLength({ min: 3 }).withMessage("title Required"),
+    body("mail").isLength({ min: 3 }).withMessage("title Required"),
     body("enc_key").isLength({ min: 4 }).withMessage("Secret is required"),
     body("password")
       .isLength({ min: 5 })
