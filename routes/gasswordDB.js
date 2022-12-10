@@ -44,13 +44,14 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { title, password , enc_key } = req.body;
+    const { title, password , enc_key ,  mail } = req.body;
     try {
       const user = await Users.findOne({ user: req.user.id });
       const processedKey = await bcrypt.compare(enc_key, user.enc_key)
       if (!processedKey) return res.status(404).send("Incorect Encryption Key!");
       
       const gass = await Gassword.create({
+        mail: mail,
         title: title,
         password: encrypt(password ,enc_key),
         user: req.user.id,
