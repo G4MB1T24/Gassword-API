@@ -10,6 +10,8 @@ const encrypt = require("../helpers/Encryptor");
 
 require("dotenv").config();
 
+let success = false
+
 router.post(
   "/getgass",
 
@@ -56,8 +58,9 @@ router.post(
         password: encrypt(password ,enc_key),
         user: req.user.id,
       });
+      success  = true  
 
-      res.send(gass);
+      res.json({ success, gass });
     } catch (error) {
       res.send("Some Error has occured make sure to input right credentials. if you forgot your enc_key there is no way to recover it.").status(404)
   

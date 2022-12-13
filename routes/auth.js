@@ -56,6 +56,7 @@ router.post(
 router.post(
   "/login",
   [
+    body("enc_key").isLength({ min: 4 }).withMessage("Secret is required"),
     body("email", "not an email").isEmail(),
     body("password").isLength({min: 5}).exists().withMessage("Min 5 characters Required"),
     body("mpin").isLength({ min: 4, max: 4 }).withMessage("Mpin is required"),
@@ -66,7 +67,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password, mpin } = req.body;
+    const { email, password, mpin , enc_key } = req.body;
     try {
       let user = await Users.findOne({ email });
       // console.log(user)
@@ -77,6 +78,8 @@ router.post(
       }
       const mpincompare = await bcrypt.compare(mpin, user.mpin);
       if (!mpincompare) return res.status(404).send("Incorrect Mpin");
+      const encCompare = await bcrypt.compare(enc_key, user.enc_key)
+      if (!encCompare)  return res.status(404).send("Incorrect cred")
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
         success = false
