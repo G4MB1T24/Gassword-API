@@ -23,6 +23,7 @@ router.post(
       const mpincompare = await bcrypt.compare(req.body.mpin, user.mpin);
       if (!mpincompare) return res.status(404).send("Incorect Mpin");
       const gass = await Gassword.find({ user: req.user.id });
+      
       res.json(gass);
     } catch (error) {
       res.send("Some Error has occured make sure to input right credentials. if you forgot your enc_key there is no way to recover it.").status(404)
@@ -48,10 +49,13 @@ router.post(
     }
     const { title, password , enc_key ,  mail } = req.body;
     try {
-      const user = await Users.findOne({ user: req.user.id });
+      const lmao = req.user.email
+      console.log(lmao)
+      const user = await Users.findOne({ email: req.user.email });
+
       const processedKey = await bcrypt.compare(enc_key, user.enc_key)
       if (!processedKey) return res.status(404).send("Incorect Encryption Key!");
-      
+   
       const gass = await Gassword.create({
         mail: mail,
         title: title,
@@ -62,7 +66,8 @@ router.post(
 
       res.json({ success, gass });
     } catch (error) {
-      res.send("Some Error has occured make sure to input right credentials. if you forgot your enc_key there is no way to recover it.").status(404)
+      // res.send("Some Error has occured make sure to input right credentials. if you forgot your enc_key there is no way to recover it.").status(404)
+      res.send(error.message);
   
     }
   }

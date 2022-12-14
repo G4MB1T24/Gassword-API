@@ -44,7 +44,7 @@ router.post(
       success = true
       res.json({
         success,
-        token: TokenGen(User._id),
+        token: TokenGen(User._id , email),
       });
     } catch (error) {
       res.send("Some Error has occured make sure to input right info").status(404)
@@ -70,7 +70,6 @@ router.post(
     const { email, password, mpin , enc_key } = req.body;
     try {
       let user = await Users.findOne({ email });
-      // console.log(user)
       if (!user) {
         return res
           .status(400)
@@ -79,17 +78,20 @@ router.post(
       const mpincompare = await bcrypt.compare(mpin, user.mpin);
       if (!mpincompare) return res.status(404).send("Incorrect Mpin");
       const encCompare = await bcrypt.compare(enc_key, user.enc_key)
+
+      // console.log(encCompare)
+      console.log({"e":enc_key , "userjey":user.enc_key})
       if (!encCompare)  return res.status(404).send("Incorrect cred")
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
-        success = false
         return res
-          
+        
+        
           .status(400)
-          .json({success, error: "Login with correct Credentials " });
+          .json({success :false, error: "Login with correct Credentials " });
       }
       success = true
-      res.json({ success , token: TokenGen(user._id) });
+      res.json({ success , token: TokenGen(user._id , email) });
     } catch (error) {
       console.log(error.message);
       res.send("Some Error has occured make sure to input right info").status(404)
