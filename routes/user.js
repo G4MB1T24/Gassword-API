@@ -7,9 +7,7 @@ router.post("/getuser", getAuth, async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await Users.findById(userId).select(
-      "-password",
-      "-mpin",
-      "enc_key"
+      "email"
     );
 
     res.send(user);

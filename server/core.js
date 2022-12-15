@@ -5,7 +5,7 @@ const cors = require("cors");
 const ipfilter = require("express-ipfilter").IpFilter;
 
 const app = express();
-const ips = [["127.0.0.1", "127.0.0.10"], process.env.SERVER_IP];
+const ips = ["0.0.0.0/0"];
 const port = 4000 || process.env.PORT;
 
 const Auth = require("../routes/auth");
@@ -21,9 +21,9 @@ app.get("/", async (req, res) => {
   res.send("Gassword up and running!");
 });
 
-app.use("/auth/api", ipfilter(ips, { mode: "allow" }), Auth);
-app.use("/api/gass", ipfilter(ips, { mode: "allow" }), GasswordDB);
-app.use("/api/user", ipfilter(ips, { mode: "allow" }, UserRoute));
+app.use("/auth/api", Auth);
+app.use("/api/gass", GasswordDB);
+app.use("/api/user", UserRoute);
 
 app.listen(port, () => {
   console.log(`Server Serving at http://localhost:${port}`);
