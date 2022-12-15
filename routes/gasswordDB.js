@@ -49,8 +49,7 @@ router.post(
     }
     const { title, password , enc_key ,  mail } = req.body;
     try {
-      const lmao = req.user.email
-      console.log(lmao)
+      
       const user = await Users.findOne({ email: req.user.email });
 
       const processedKey = await bcrypt.compare(enc_key, user.enc_key)

@@ -79,8 +79,7 @@ router.post(
       if (!mpincompare) return res.status(404).send("Incorrect Mpin");
       const encCompare = await bcrypt.compare(enc_key, user.enc_key)
 
-      // console.log(encCompare)
-      console.log({"e":enc_key , "userjey":user.enc_key})
+
       if (!encCompare)  return res.status(404).send("Incorrect cred")
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
@@ -93,7 +92,7 @@ router.post(
       success = true
       res.json({ success , token: TokenGen(user._id , email) });
     } catch (error) {
-      console.log(error.message);
+      
       res.send("Some Error has occured make sure to input right info").status(404)
       
     }
