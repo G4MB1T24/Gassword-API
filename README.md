@@ -47,7 +47,7 @@ To run this project, you will need to add the following environment variables to
   
 <img src="https://i.imgur.com/6VBRnsW.jpg"> </img>
 
-## future
+## ToDo
   - Currently server is encrypting only important details like password, mpin, enc_key
     - will decrypt whole user and gassword object in future
 
